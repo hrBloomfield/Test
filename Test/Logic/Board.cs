@@ -2,7 +2,6 @@ namespace Game.Logic
 {
     public class Board
     {
-        public ulong Hash;
         public int[] gameBoard;
 
         public Board()
@@ -19,37 +18,26 @@ namespace Game.Logic
 
         public void PrintBoard(char userSide)
         {
-            if (userSide == 'w')
-            {
-                for (int row = 7; row >= 0; row--)
-                {
-                    for (int col = 0; col < 8; col++)
-                    {
-                        int index = row * 8 + col;
-                        Console.Write($"{gameBoard[index],3}");
-                    }
+            int startRow = userSide == 'w' ? 7 : 0;
+            int step = userSide == 'w' ? -1 : 1;
 
-                    Console.WriteLine();
-                }
-            }
-            else if (userSide == 'b')
+            for (int i = 0; i < 8; i++)
             {
-                for (int row = 0; row < 8; row++)
-                {
-                    for (int col = 0; col < 8; col++)
-                    {
-                        int index = row * 8 + col;
-                        Console.Write($"{gameBoard[index],3}");
-                    }
+                int row = startRow + i * step;
+                int rankLabel = row + 1;
+                
+                Console.Write($"{rankLabel} ");
 
-                    Console.WriteLine();
+                for (int col = 0; col < 8; col++)
+                {
+                    int index = row * 8 + col;
+                    Console.Write($" {UnicodePieces.ToChar(gameBoard[index])} ");
                 }
+                
+                Console.WriteLine();
             }
-            else
-            {
-                Console.WriteLine("Invalid userSide");
-                MainGame.Main();
-            }
+            
+            Console.WriteLine("   a  b  c  d  e  f  g  h");
         }
 
         public bool IsStartingPosition()

@@ -121,15 +121,15 @@ namespace Game.Logic
             // Human player's turn
             Console.WriteLine("Piece Coordinate to move: ");
             
-            int userPieceSelection;
-            if (!int.TryParse(Console.ReadLine(), out userPieceSelection) || userPieceSelection < 0 ||
-                userPieceSelection >= 64)
+            Console.Write("Piece to move: ");
+            string fromInput = Console.ReadLine();
+
+            if (!Sq.TryParse(fromInput, out int userPieceSelection))
             {
-                Console.WriteLine("Invalid square index.");
+                Console.WriteLine("Invalid square.");
                 Console.ReadKey();
                 return;
             }
-
             int usersPiece = board.gameBoard[userPieceSelection];
             if (usersPiece == Pieces.noPiece)
             {
@@ -153,13 +153,21 @@ namespace Game.Logic
             {
                 foreach (var move in moves)
                 {
-                    Console.WriteLine($"From {move.from} > {move.to} ({move.moveType})");
+                    Console.WriteLine($"{Sq.ToAlgebraic(move.from)} -> {Sq.ToAlgebraic(move.to)} ({move.moveType})");
                 }
 
                 Console.WriteLine("Move to where?");
-                int userMoveChoice = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Move to: ");
+                string toInput = Console.ReadLine();
 
-                Move.moveInfo selectedMove = moves.Find(move => move.to == userMoveChoice);
+                if (!Sq.TryParse(toInput, out int toIndex))
+                {
+                    Console.WriteLine("Invalid destination.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Move.moveInfo selectedMove = moves.Find(m => m.to == toIndex);
 
                 if (selectedMove != null)
                 {
