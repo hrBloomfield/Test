@@ -78,14 +78,14 @@ namespace Game.Logic
             }
 
             bool isBotTurn = false;
-            if (userGameMode == "1")
+            if (MainGame.userGameMode == "1")
                 isBotTurn = (userSide == 'w' && sideToMove == 'b') || (userSide == 'b' && sideToMove == 'w');
             else if (userGameMode == "3")
                 isBotTurn = true;
 
             if (isBotTurn)
             {
-                Move.moveInfo botMove = Kenith.FindBestMove(sideToMove, board);
+                Move.moveInfo botMove = FindBestMove.findBestMove(sideToMove, board);
                 if (botMove != null)
                 {
                     Console.WriteLine($"Kenith moves from {botMove.from} to {botMove.to}");
