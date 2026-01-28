@@ -13,7 +13,6 @@ namespace Game.Logic
         private static bool blackKingsideRookMoved = false;
         private static bool blackQueensideRookMoved = false;
         
-        // Timer support
         private static Timer gameTimer = null;
         private static bool useTimer = false;
 
@@ -117,8 +116,7 @@ namespace Game.Logic
 
                 return;
             }
-
-            // Human player's turn
+            
             Console.WriteLine("Piece Coordinate to move: ");
             
             Console.Write("Piece to move: ");
@@ -205,8 +203,7 @@ namespace Game.Logic
             int capturedPiece = board.gameBoard[move.to];
             bool isPawnMove = Math.Abs(movingPiece) == Pieces.pawn;
             bool isCapture = capturedPiece != Pieces.noPiece || move.moveType == Move.MoveType.EnPassant;
-
-            // Track king and rook moves for castling rights
+            
             if (Math.Abs(movingPiece) == Pieces.king)
             {
                 if (PieceHelpers.IsWhite(movingPiece))
@@ -216,22 +213,19 @@ namespace Game.Logic
             }
             else if (Math.Abs(movingPiece) == Pieces.rook)
             {
-                // White rooks
                 if (move.from == 0) whiteQueensideRookMoved = true;
                 else if (move.from == 7) whiteKingsideRookMoved = true;
-                // Black rooks
+
                 else if (move.from == 56) blackQueensideRookMoved = true;
                 else if (move.from == 63) blackKingsideRookMoved = true;
             }
-
-            // Clear old en passant marker
+            
             if (enPassantSquare != -1)
             {
                 board.gameBoard[enPassantSquare] = Pieces.noPiece;
                 enPassantSquare = -1;
             }
-
-            // Handle castling
+            
             if (move.moveType == Move.MoveType.Castle)
             {
                 bool kingSide = move.to > move.from;
@@ -259,19 +253,16 @@ namespace Game.Logic
                 Game.RecordMove(board, move, isPawnMove, isCapture);
                 return;
             }
-
-            // Handle en passant
+            
             if (move.moveType == Move.MoveType.EnPassant)
             {
                 int capturedPawnSquare = PieceHelpers.IsWhite(movingPiece) ? move.to - 8 : move.to + 8;
                 board.gameBoard[capturedPawnSquare] = Pieces.noPiece;
             }
-
-            // Normal move
+            
             board.gameBoard[move.to] = movingPiece;
             board.gameBoard[move.from] = Pieces.noPiece;
-
-            // Double pawn move create en passant marker
+            
             if (move.moveType == Move.MoveType.DoubleMove)
             {
                 enPassantSquare = PieceHelpers.IsWhite(movingPiece) ? move.to - 8 : move.to + 8;
@@ -280,8 +271,7 @@ namespace Game.Logic
                     ? Pieces.enPassantMarker
                     : Pieces.black * Pieces.enPassantMarker;
             }
-
-            // Record move for game history (50-move rule and repetition detection)
+            
             Game.RecordMove(board, move, isPawnMove, isCapture);
         }
 

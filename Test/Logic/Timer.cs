@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-
 namespace Game.Logic
 {
     public class Timer
@@ -18,8 +15,7 @@ namespace Game.Logic
             blackTimeSeconds = timePerSideInSeconds;
             isRunning = false;
         }
-
-        // start
+        
         public void Start(char side)
         {
             if (isRunning)
@@ -35,8 +31,7 @@ namespace Game.Logic
             timerThread.IsBackground = true;
             timerThread.Start();
         }
-
-        // stop
+        
         public void Stop()
         {
             isRunning = false;
@@ -45,15 +40,13 @@ namespace Game.Logic
                 timerThread.Join(100); // Wait briefly for thread to finish
             }
         }
-
-        // switch
+        
         public void SwitchSides()
         {
             char newSide = currentSide == 'w' ? 'b' : 'w';
             Start(newSide);
         }
-
-        // count
+        
         private void TimerCountdown()
         {
             while (isRunning)
@@ -90,8 +83,7 @@ namespace Game.Logic
                 }
             }
         }
-
-        // out of time
+        
         public event Action<char> OnTimeExpired;
         
         public int GetRemainingTime(char side)
