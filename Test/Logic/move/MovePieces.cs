@@ -8,27 +8,15 @@ namespace Game.Logic
             bool isWhite = piece > 0;
             List<Move.moveInfo> legalMoves = new();
 
-            switch (Math.Abs(piece))
+            legalMoves = Math.Abs(piece) switch
             {
-                case Pieces.pawn:
-                    legalMoves = new Pawn(isWhite).GenerateLegalMoves(board, position);
-                    break;
-                case Pieces.rook:
-                    legalMoves = new Rook(isWhite).GenerateLegalMoves(board, position);
-                    break;
-                case Pieces.knight:
-                    legalMoves = new Knight(isWhite).GenerateLegalMoves(board, position);
-                    break;
-                case Pieces.bishop:
-                    legalMoves = new Bishop(isWhite).GenerateLegalMoves(board, position);
-                    break;
-                case Pieces.queen:
-                    legalMoves = new Queen(isWhite).GenerateLegalMoves(board, position);
-                    break;
-                case Pieces.king:
-                    legalMoves = new King(isWhite).GenerateLegalMoves(board, position);
-                    break;
-            }
+                Pieces.pawn   => new Pawn(isWhite).GenerateLegalMoves(board, position),
+                Pieces.rook   => new Rook(isWhite).GenerateLegalMoves(board, position),
+                Pieces.knight => new Knight(isWhite).GenerateLegalMoves(board, position),
+                Pieces.bishop => new Bishop(isWhite).GenerateLegalMoves(board, position),
+                Pieces.queen  => new Queen(isWhite).GenerateLegalMoves(board, position),
+                Pieces.king   => new King(isWhite).GenerateLegalMoves(board, position)
+            };
 
             return legalMoves;
 

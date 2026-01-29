@@ -2,9 +2,8 @@ namespace Game.Logic
 {
     public class Game
     {
-        // Track game history for repetition detection
         private static List<string> positionHistory = new List<string>();
-        private static int halfMoveClock = 0; // Moves since last pawn move or capture
+        private static int halfMoveClock = 0;
 
         public static void ResetGameHistory()
         {
@@ -14,7 +13,6 @@ namespace Game.Logic
 
         public static void RecordMove(Board board, Move.moveInfo move, bool isPawnMove, bool isCapture)
         {
-            // Reset half-move clock on pawn move or capture
             if (isPawnMove || isCapture)
             {
                 halfMoveClock = 0;
@@ -23,15 +21,13 @@ namespace Game.Logic
             {
                 halfMoveClock++;
             }
-
-            // Record position for repetition detection
+            
             string position = BoardToString(board);
             positionHistory.Add(position);
         }
 
         private static string BoardToString(Board board)
         {
-            // Create a string representation of the board position
             return string.Join(",", board.gameBoard);
         }
 
@@ -41,32 +37,26 @@ namespace Game.Logic
 
             bool kingInCheck = IsKingInCheck(sideToMove, board);
             var moves = GenerateAllLegalMoves(sideToMove, board);
-
-            // Checkmate or Stalemate
+            
             if (moves.Count == 0)
             {
                 if (kingInCheck)
                 {
-                    // Checkmate - opponent wins
                     winner = sideToMove == 'w' ? "black wins by checkmate" : "white wins by checkmate";
                 }
                 else
                 {
-                    // Stalemate - no legal moves but not in check
                     winner = "draw by stalemate";
                 }
             }
-            // Fifty-move rule
             else if (CheckFiftyMoveRule())
             {
                 winner = "draw by fifty move rule";
             }
-            // Threefold repetition
             else if (CheckThreeFoldRepetition())
             {
                 winner = "draw by threefold repetition";
             }
-            // Insufficient material
             else if (CheckInsufficientMaterial(board))
             {
                 winner = "draw by insufficient material";
@@ -100,11 +90,10 @@ namespace Game.Logic
             int kingPiece = (sideToMove == 'w') ? Pieces.white * Pieces.king : Pieces.black * Pieces.king;
             int kingPosition = Array.IndexOf(board.gameBoard, kingPiece);
 
-            if (kingPosition == -1) return true; // king missing
+            if (kingPosition == -1) return true;
 
             char opponentSide = (sideToMove == 'w') ? 'b' : 'w';
-
-            // Scan all opponent pieces
+            
             for (int i = 0; i < board.gameBoard.Length; i++)
             {
                 int piece = board.gameBoard[i];
@@ -150,8 +139,6 @@ namespace Game.Logic
         
         public static bool CheckFiftyMoveRule()
         {
-            // The fifty-move rule: If no pawn has moved and no capture has been made 
-            // in the last 50 moves by each player (100 half-moves), it's a draw
             return halfMoveClock >= 100;
         }
 
@@ -159,11 +146,9 @@ namespace Game.Logic
         {
             if (positionHistory.Count < 3) return false;
 
-            // Get the current position (last in history)
             string currentPosition = positionHistory[positionHistory.Count - 1];
             int repetitionCount = 0;
-
-            // Count how many times this position has appeared
+            
             foreach (string position in positionHistory)
             {
                 if (position == currentPosition)
@@ -179,7 +164,6 @@ namespace Game.Logic
 
         public static bool CheckInsufficientMaterial(Board board)
         {
-            // Count pieces
             int whiteKnights = 0, blackKnights = 0;
             int whiteBishops = 0, blackBishops = 0;
             int whitePawns = 0, blackPawns = 0;
@@ -191,7 +175,7 @@ namespace Game.Logic
                 int piece = board.gameBoard[i];
                 int pieceType = Math.Abs(piece);
 
-                if (piece > 0) // White
+                if (piece > 0)
                 {
                     switch (pieceType)
                     {
@@ -202,7 +186,7 @@ namespace Game.Logic
                         case Pieces.queen: whiteQueens++; break;
                     }
                 }
-                else if (piece < 0) // Black
+                else if (piece < 0)
                 {
                     switch (pieceType)
                     {
@@ -214,8 +198,7 @@ namespace Game.Logic
                     }
                 }
             }
-
-            // If there are pawns, rooks, or queens, there's sufficient material
+            
             if (whitePawns > 0 || blackPawns > 0 || 
                 whiteRooks > 0 || blackRooks > 0 || 
                 whiteQueens > 0 || blackQueens > 0)
@@ -223,29 +206,24 @@ namespace Game.Logic
                 return false;
             }
 
-            // King vs King
+
             if (whiteKnights == 0 && whiteBishops == 0 && 
                 blackKnights == 0 && blackBishops == 0)
             {
                 return true;
             }
 
-            // King and Knight vs King
             if ((whiteKnights == 1 && whiteBishops == 0 && blackKnights == 0 && blackBishops == 0) ||
                 (blackKnights == 1 && blackBishops == 0 && whiteKnights == 0 && whiteBishops == 0))
             {
                 return true;
             }
-
-            // King and Bishop vs King
+            
             if ((whiteBishops == 1 && whiteKnights == 0 && blackKnights == 0 && blackBishops == 0) ||
                 (blackBishops == 1 && blackKnights == 0 && whiteKnights == 0 && whiteBishops == 0))
             {
                 return true;
             }
-
-            // King and Bishop vs King and Bishop (same color bishops)
-            // This is complex to check properly, so we'll skip it for now
 
             return false;
         }
