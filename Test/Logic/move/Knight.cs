@@ -18,7 +18,10 @@ namespace Game.Logic
             int currentRow = currentPos / 8;
             int currentCol = currentPos % 8;
 
-            bool IsOpponentPiece(int piece) => isKnightWhite ? piece < Pieces.noPiece : piece > Pieces.noPiece;
+            bool IsOpponentPiece(int piece)
+            {
+                return isKnightWhite ? piece < Pieces.noPiece : piece > Pieces.noPiece;
+            }
 
             foreach (int dir in directions)
             {

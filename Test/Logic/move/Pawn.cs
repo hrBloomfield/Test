@@ -38,7 +38,10 @@ namespace Game.Logic
             int captureLeft = currentPos + diaganalLeft;
             int captureRight = currentPos + diaganalRight;
 
-            bool IsOpponentPiece(int piece) => isPawnWhite ? piece < 0 : piece > 0;
+            bool IsOpponentPiece(int piece)
+            {
+                return isPawnWhite ? piece < 0 : piece > 0;
+            }
 
             int forwardOne = currentPos + direction;
             if (forwardOne < 0 || forwardOne >= 64) 

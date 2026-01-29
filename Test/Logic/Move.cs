@@ -35,8 +35,11 @@ namespace Game.Logic
                 this.moveType = moveType;
             }
         }
-        
-        protected bool IsOpponent(int piece, bool isWhite) => isWhite ? piece < 0 : piece > 0;
+
+        private bool IsOpponent(int piece, bool isWhite)
+        {
+            return isWhite ? piece < 0 : piece > 0;
+        }
 
         protected List<moveInfo> SlideMoves(int[] board, int currentPos, int[] directions, bool isWhite)
         {
