@@ -15,7 +15,8 @@ namespace Game.Logic
                 Pieces.knight => new Knight(isWhite).GenerateLegalMoves(board, position),
                 Pieces.bishop => new Bishop(isWhite).GenerateLegalMoves(board, position),
                 Pieces.queen  => new Queen(isWhite).GenerateLegalMoves(board, position),
-                Pieces.king   => new King(isWhite).GenerateLegalMoves(board, position)
+                Pieces.king   => new King(isWhite).GenerateLegalMoves(board, position),
+                _ => new List<Move.moveInfo>()
             };
 
             return legalMoves;
