@@ -114,6 +114,28 @@ namespace Game.Logic
             return false;
         }
 
+        public static bool IsSquareUnderAttack(int squareIndex, char attackingSide, Board board)
+        {
+            for (int i = 0; i < board.gameBoard.Length; i++)
+            {
+                int piece = board.gameBoard[i];
+                if (piece == Pieces.noPiece) continue;
+
+                bool isWhitePiece = piece > 0;
+                if ((attackingSide == 'w' && !isWhitePiece) || (attackingSide == 'b' && isWhitePiece))
+                    continue;
+
+                var pseudoMoves = MovePieces.GetLegalMoves(board.gameBoard, i);
+                foreach (var move in pseudoMoves)
+                {
+                    if (move.to == squareIndex)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         public static bool WillKingBeInCheck(char sideToMove, Board board, Move.moveInfo move)
         {
             Board tempBoard = board.Clone();
@@ -177,25 +199,27 @@ namespace Game.Logic
 
                 if (piece > 0)
                 {
-                    switch (pieceType)
+                    _ = pieceType switch
                     {
-                        case Pieces.pawn: whitePawns++; break;
-                        case Pieces.knight: whiteKnights++; break;
-                        case Pieces.bishop: whiteBishops++; break;
-                        case Pieces.rook: whiteRooks++; break;
-                        case Pieces.queen: whiteQueens++; break;
-                    }
+                        Pieces.pawn   => whitePawns++,
+                        Pieces.knight => whiteKnights++,
+                        Pieces.bishop => whiteBishops++,
+                        Pieces.rook   => whiteRooks++,
+                        Pieces.queen  => whiteQueens++,
+                        _ => 0
+                    };
                 }
                 else if (piece < 0)
                 {
-                    switch (pieceType)
+                    _ = pieceType switch
                     {
-                        case Pieces.pawn: blackPawns++; break;
-                        case Pieces.knight: blackKnights++; break;
-                        case Pieces.bishop: blackBishops++; break;
-                        case Pieces.rook: blackRooks++; break;
-                        case Pieces.queen: blackQueens++; break;
-                    }
+                        Pieces.pawn   => blackPawns++,
+                        Pieces.knight => blackKnights++,
+                        Pieces.bishop => blackBishops++,
+                        Pieces.rook   => blackRooks++,
+                        Pieces.queen  => blackQueens++,
+                        _ => 0
+                    };
                 }
             }
             

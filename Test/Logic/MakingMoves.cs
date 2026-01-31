@@ -29,6 +29,22 @@ namespace Game.Logic
             Game.ResetGameHistory();
         }
 
+        public static bool CanCastleKingside(bool isWhite)
+        {
+            if (isWhite)
+                return !whiteKingMoved && !whiteKingsideRookMoved;
+            else
+                return !blackKingMoved && !blackKingsideRookMoved;
+        }
+
+        public static bool CanCastleQueenside(bool isWhite)
+        {
+            if (isWhite)
+                return !whiteKingMoved && !whiteQueensideRookMoved;
+            else
+                return !blackKingMoved && !blackQueensideRookMoved;
+        }
+
         public static void InitializeTimer(bool enableTimer, int timePerSideInSeconds = 600)
         {
             useTimer = enableTimer;

@@ -4,13 +4,13 @@ namespace Game.Logic.Bot
     {
         public static int quiescence(Board board, int alpha, int beta, char sideToMove)
         {
-            int standPat = Eval.EvaluatePosition(board, sideToMove);
+            int baselineEval = Eval.EvaluatePosition(board, sideToMove);
 
-            if (standPat >= beta) 
+            if (baselineEval >= beta) 
                 return beta;
             
-            if (standPat > alpha) 
-                alpha = standPat;
+            if (baselineEval > alpha) 
+                alpha = baselineEval;
             
             var captures = Game.GenerateAllLegalMoves(sideToMove, board)
                 .Where(m => m.moveType == Move.MoveType.Capture || m.moveType == Move.MoveType.PromotionCapture)

@@ -15,7 +15,7 @@ namespace Game.Logic.Bot
                 if (Kenith.pieceValues.ContainsKey(pieceType))
                     total += Kenith.pieceValues[pieceType];
             }
-
+            
             return total;
         }
     }
