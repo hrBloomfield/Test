@@ -114,28 +114,6 @@ namespace Game.Logic
             return false;
         }
 
-        public static bool IsSquareUnderAttack(int squareIndex, char attackingSide, Board board)
-        {
-            for (int i = 0; i < board.gameBoard.Length; i++)
-            {
-                int piece = board.gameBoard[i];
-                if (piece == Pieces.noPiece) continue;
-
-                bool isWhitePiece = piece > 0;
-                if ((attackingSide == 'w' && !isWhitePiece) || (attackingSide == 'b' && isWhitePiece))
-                    continue;
-
-                var pseudoMoves = MovePieces.GetLegalMoves(board.gameBoard, i);
-                foreach (var move in pseudoMoves)
-                {
-                    if (move.to == squareIndex)
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
         public static bool WillKingBeInCheck(char sideToMove, Board board, Move.moveInfo move)
         {
             Board tempBoard = board.Clone();
@@ -152,8 +130,40 @@ namespace Game.Logic
 
             foreach (var move in moves)
             {
-                if (!WillKingBeInCheck(sideToMove, board, move))
+                // Special handling for castling
+                if (move.moveType == Move.MoveType.Castle)
+                {
+                    char opponentSide = sideToMove == 'w' ? 'b' : 'w';
+                    
+                    // King must not be in check currently
+                    if (IsKingInCheck(sideToMove, board))
+                        continue;
+                    
+                    // Determine which square the king passes through
+                    int passThroughSquare = move.to > move.from ? move.from + 1 : move.from - 1;
+                    
+                    // King must not pass through check
+                    Board tempBoard1 = board.Clone();
+                    tempBoard1.gameBoard[passThroughSquare] = tempBoard1.gameBoard[move.from];
+                    tempBoard1.gameBoard[move.from] = Pieces.noPiece;
+                    if (IsKingInCheck(sideToMove, tempBoard1))
+                        continue;
+                    
+                    // King must not end in check
+                    Board tempBoard2 = board.Clone();
+                    tempBoard2.gameBoard[move.to] = tempBoard2.gameBoard[move.from];
+                    tempBoard2.gameBoard[move.from] = Pieces.noPiece;
+                    if (IsKingInCheck(sideToMove, tempBoard2))
+                        continue;
+                    
                     legalMoves.Add(move);
+                }
+                else
+                {
+                    // Normal move - just check if it leaves king in check
+                    if (!WillKingBeInCheck(sideToMove, board, move))
+                        legalMoves.Add(move);
+                }
             }
             
             return legalMoves;
@@ -199,27 +209,25 @@ namespace Game.Logic
 
                 if (piece > 0)
                 {
-                    _ = pieceType switch
+                    switch (pieceType)
                     {
-                        Pieces.pawn   => whitePawns++,
-                        Pieces.knight => whiteKnights++,
-                        Pieces.bishop => whiteBishops++,
-                        Pieces.rook   => whiteRooks++,
-                        Pieces.queen  => whiteQueens++,
-                        _ => 0
-                    };
+                        case Pieces.pawn: whitePawns++; break;
+                        case Pieces.knight: whiteKnights++; break;
+                        case Pieces.bishop: whiteBishops++; break;
+                        case Pieces.rook: whiteRooks++; break;
+                        case Pieces.queen: whiteQueens++; break;
+                    }
                 }
                 else if (piece < 0)
                 {
-                    _ = pieceType switch
+                    switch (pieceType)
                     {
-                        Pieces.pawn   => blackPawns++,
-                        Pieces.knight => blackKnights++,
-                        Pieces.bishop => blackBishops++,
-                        Pieces.rook   => blackRooks++,
-                        Pieces.queen  => blackQueens++,
-                        _ => 0
-                    };
+                        case Pieces.pawn: blackPawns++; break;
+                        case Pieces.knight: blackKnights++; break;
+                        case Pieces.bishop: blackBishops++; break;
+                        case Pieces.rook: blackRooks++; break;
+                        case Pieces.queen: blackQueens++; break;
+                    }
                 }
             }
             

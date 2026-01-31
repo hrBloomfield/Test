@@ -31,10 +31,6 @@ namespace Game.Logic
                 bool canCastleKingside = MakingMoves.CanCastleKingside(isKingWhite);
                 bool canCastleQueenside = MakingMoves.CanCastleQueenside(isKingWhite);
 
-                char opponentSide = isKingWhite ? 'b' : 'w';
-                Board tempBoard = new Board();
-                tempBoard.gameBoard = (int[])board.Clone();
-
                 // king-side castling
                 if (canCastleKingside)
                 {
@@ -47,16 +43,8 @@ namespace Game.Logic
                         // No pieces between king and rook
                         if (board[kSide1] == Pieces.noPiece && board[kSide2] == Pieces.noPiece && Math.Abs(board[kRookSquare]) == Pieces.rook)
                         {
-                            // King not in check
-                            if (!Game.IsSquareUnderAttack(currentPos, opponentSide, tempBoard))
-                            {
-                                // King doesn't pass through check
-                                if (!Game.IsSquareUnderAttack(kSide1, opponentSide, tempBoard))
-                                {
-                                    // King doesn't end in check (already handled by GetLegalMovesForPiece)
-                                    legalMoves.Add(new moveInfo(currentPos, kSide2, MoveType.Castle));
-                                }
-                            }
+                            // Add castle move - will be filtered later if squares are under attack
+                            legalMoves.Add(new moveInfo(currentPos, kSide2, MoveType.Castle));
                         }
                     }
                 }
@@ -74,16 +62,8 @@ namespace Game.Logic
                         // No pieces between king and rook
                         if (board[qSide1] == Pieces.noPiece && board[qSide2] == Pieces.noPiece && board[qSide3] == Pieces.noPiece && Math.Abs(board[qRookSquare]) == Pieces.rook)
                         {
-                            // King not in check
-                            if (!Game.IsSquareUnderAttack(currentPos, opponentSide, tempBoard))
-                            {
-                                // King doesn't pass through check
-                                if (!Game.IsSquareUnderAttack(qSide1, opponentSide, tempBoard))
-                                {
-                                    // King doesn't end in check (already handled by GetLegalMovesForPiece)
-                                    legalMoves.Add(new moveInfo(currentPos, qSide2, MoveType.Castle));
-                                }
-                            }
+                            // Add castle move - will be filtered later if squares are under attack
+                            legalMoves.Add(new moveInfo(currentPos, qSide2, MoveType.Castle));
                         }
                     }
                 }
@@ -98,7 +78,8 @@ namespace Game.Logic
 
                 int currentRow = currentPos / 8;
                 int newRow = pos / 8;
-                
+
+                // prevent horizontal wrap
                 if (Math.Abs(newRow - currentRow) > 1 && (dir == moveRight || dir == moveLeft)) continue;
 
                 int piece = board[pos];
