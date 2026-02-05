@@ -18,9 +18,7 @@ namespace Game.Logic
             
             bool IsEnPassantMarker(int piece)
             {
-                return isPawnWhite
-                    ? piece == Pieces.black * Pieces.enPassantMarker
-                    : piece == Pieces.enPassantMarker;
+                return isPawnWhite ? piece == Pieces.black * Pieces.enPassantMarker : piece == Pieces.enPassantMarker;
             }
 
             int direction = isPawnWhite ? moveUp : moveDown;
